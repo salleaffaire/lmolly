@@ -52,12 +52,24 @@ public:
       return rval;
    }
 
-   void put_empty(std::shared_ptr<T>) {
-
+   void put_empty(std::shared_ptr<T> &x) {
+      // Protect the queue
+      {
+         std::lock_guard<std::mutex> lock(mFullQueueMutex);
+         rval = mEmptyQueue.push(x);
+      }
+      // Signal 
+      mEmptyQueueSemaphore.Signal();
    }
 
-   void put_full(std::shared_ptr<T>) {
-      
+   void put_full(std::shared_ptr<T> &x) {
+       // Protect the queue
+      {
+         std::lock_guard<std::mutex> lock(mFullQueueMutex);
+         rval = mFullQueue.push(x);
+      }
+      // Signal 
+      mFullQueueSemaphore.Signal();           
    }
 
 private:
