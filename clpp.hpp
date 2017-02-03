@@ -57,7 +57,7 @@ public:
       // Save the argument string
       mArguments = arguments;
 
-      std::cout << mArguments << std::endl; 
+      std::cout << "Assembled arguments: " << mArguments << std::endl; 
 
       if (lex(mArguments)) {
          rval = parse();
@@ -75,7 +75,7 @@ public:
 
       mProgramName = argv[0];
 
-      for (int i=0;i<argc;++i) {
+      for (int i=1;i<argc;++i) {
          assembled_arguments += argv[i];
          assembled_arguments += " ";
       }
@@ -202,6 +202,7 @@ private:
       while (strit != strit_end) {
          // Found a flag or a special flag
          if (*strit == '-') {
+	    std::cout << "Dash" << std::endl;
             ++strit;
             if (*strit == '-') {
                ++strit;
@@ -220,6 +221,7 @@ private:
             }
          }
          else if (*strit == '"') {
+	    std::cout << "Quote" << std::endl;
             ++strit;
             std::string value;
             while ((*strit != '"')) {
@@ -233,6 +235,7 @@ private:
          }
          // Found a flag 
          else if (*strit == '/') {
+	    std::cout << "Slash" << std::endl;
             strit++;
             std::string value;
             value += *strit++;
@@ -242,6 +245,7 @@ private:
          }
          // Found a name
          else if (std::isalpha(*strit, loc) || (*strit == '_')) {
+	    std::cout << "Name" << std::endl;
             std::string value;
             while (std::isalnum(*strit, loc) || (*strit == '_') || (*strit == '.') ) {
                value += *strit;
@@ -253,6 +257,7 @@ private:
          }
          // Found a number
          else if (std::isdigit(*strit, loc)) {
+	    std::cout << "Number" << std::endl;
             std::string value;
             while (std::isdigit(*strit, loc)) {
                value += *strit;
@@ -264,6 +269,7 @@ private:
          }
          // Found an equal 
          else if (*strit == '=') {
+	    std::cout << "Equal" << std::endl;
             ++strit;
             token t{TT_EQUAL, " "};
             std::cout << t;
